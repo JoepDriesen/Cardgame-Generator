@@ -1,55 +1,39 @@
 import re
+
 def parse_cdf_file(cdf_file):
     
     f = open(cdf_file, 'r')
     
-    describing = False
-    description = None
-    quoting = False
-    quote = None
+    properties = {}
+    prop = None
+    value = ''
     for line in f:
-        if line.startswith('Title'):
-            title = line.split(' - ')[1].strip()
-        elif line.startswith('Description'):
-            describing = True
-            quoting = False
-        elif line.startswith('Quote'):
-            quoting = True
-            describing = False
-        elif line == '':
-            describing = False
-            quoting = False
+        if not prop and line.startswith('Title'):
+            prop = 'Title'
+        elif not prop and line.startswith('Description'):
+            prop = 'Description'
+        elif not prop and line.startswith('Quote'):
+            prop='Quote'
+        elif prop and line.strip() == '':
+            properties[prop] = value
+            prop = None
+            value = ''
+        elif prop:
+            value += line
+            value = value.replace('\n', ' ')
+            value = value.replace('  ', ' ')
+            val_parts = re.split('([.!?] *)', value)
+            value = ''.join([each.capitalize() for each in val_parts])
+            value = value.replace(' i ', ' I ')
         else:
-            if describing:
-                if description:
-                    description += line
-                else:
-                    description = line
-            elif quoting:
-                if quote:
-                    quote += line
-                else:
-                    quote = line
-        
-    # Format description and quote
-    description = description.replace('\n',' ')
-    description = description.replace('  ', ' ')
-    desc_parts = re.split('([.!?] *)', description)
-    description = ''.join([each.capitalize() for each in desc_parts])
-    description = description.replace(' i ', ' I ')
-    if quote:
-        quote = quote.replace('\n',' ')
-        quote = quote.replace('  ', ' ')
-        desc_parts = re.split('([.!?] *)', quote)
-        quote = ''.join([each.capitalize() for each in desc_parts])
-        quote = quote.replace(' i ', ' I ')
+            raise Exception('Malformed cdf file (' + cdf_file + ')')
+    if prop:
+        properties[prop] = value
     
-    if not description:
+    if not 'Title' in properties:
+        raise Exception('A Title is required! (' + cdf_file + ')')
+    
+    if not 'Description' in properties:
         raise Exception('A Description is required! (' + cdf_file + ')')
     
-    try:
-        return {'Title': title,
-                'Description': description,
-                'Quote': quote}
-    except UnboundLocalError:
-        raise Exception('A title is required! (' + cdf_file + ')')
+    return properties

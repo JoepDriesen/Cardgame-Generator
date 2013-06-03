@@ -15,11 +15,11 @@ def get_card_image_folder(card_type):
 def get_card_image_file(card_name, card_type):
     return os.path.realpath(_card_dir + '/Images/' + card_type + '/' + card_name)
 
-def get_card_description_folder(card_type, locale='en'):
-    return os.path.realpath(_card_dir + '/Descriptions/' + locale + '/' + card_type)
+def get_card_properties_folder(card_type, locale='en'):
+    return os.path.realpath(_card_dir + '/Properties/' + locale + '/' + card_type)
 
-def get_card_description_file(card_name, card_type, locale='en'):
-    return os.path.realpath(_card_dir + '/Descriptions/' + locale + '/' + card_type + '/' + card_name)
+def get_card_properties_file(card_name, card_type, locale='en'):
+    return os.path.realpath(_card_dir + '/Properties/' + locale + '/' + card_type + '/' + card_name)
 
 def get_card_template_file(card_type):
     return os.path.realpath(_card_dir + '/Templates/' + card_type + '.png')
