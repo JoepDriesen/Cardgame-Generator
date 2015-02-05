@@ -39,7 +39,25 @@ optional arguments:
                         Planewalker
 ```
 
-### Contributing
+### About
+
+In early 2010, some people on 4chan came up with a drinking game[*](http://knowyourmeme.com/memes/4chan-drinking-game-cards). While
+it seemed like a lot of fun, it looked very crappy, was generally only funny to people who were actually on 
+4chan and a lot of the cards were just shit. For most people, this made it kind of hard to play with normal
+friends, which is obviously the reason for having a drinking game. 
+
+The basics of the game still appeared quite fun, so I set out to make a modified version of the game, more
+accessible to the general drinking game public.
+
+Over the years I and a lot of my friends have been playing this game and adjusting it where necessary. In my
+opinion it is now one of the best drinking games I have ever played (/personalbias) and would like to share it
+with the world.
+
+I have tried to make it as easy as possible to adjust the game to your own needs or add your own cards to it.
+
+Have fun!
+
+## Contributing
 Contributions are very welcome! You can contribute in the following ways:
 * Fix spelling errors
 * Translate cards into different languages
@@ -66,24 +84,6 @@ This directory should contain the following files:
 * image.[jpg,png,gif,...] - The graphic to be used for the card
 * en/props.xml - Containing information about the card. This file should be put in a directory with the name of
 the language used to describe the properties and must be structured like `assets/cards/props.template.xml`
-
-### About
-
-In early 2010, some people on 4chan came up with a drinking game[*](http://knowyourmeme.com/memes/4chan-drinking-game-cards). While
-it seemed like a lot of fun, it looked very crappy, was generally only funny to people who were actually on 
-4chan and a lot of the cards were just shit. For most people, this made it kind of hard to play with normal
-friends, which is obviously the reason for having a drinking game. 
-
-The basics of the game still appeared quite fun, so I set out to make a modified version of the game, more
-accessible to the general drinking game public.
-
-Over the years I and a lot of my friends have been playing this game and adjusting it where necessary. In my
-opinion it is now one of the best drinking games I have ever played (/personalbias) and would like to share it
-with the world.
-
-I have tried to make it as easy as possible to adjust the game to your own needs or add your own cards to it.
-
-Have fun!
 
 ## License
 This code is licensed under the [GPL license.](https://raw.githubusercontent.com/Gargamel1989/Drinker/master/LICENSE)
