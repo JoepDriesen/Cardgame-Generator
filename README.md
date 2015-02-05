@@ -21,10 +21,12 @@ which the game is ready to play.
 
 1. Install the Python packages in the `requirements.txt` file (`pip install -r requirements.txt`)
 2. Run the `generate.py` with the required options
-3. Output will be found in the directory `output/` in the form of individual card images or a printable pdf document
+3. Output will be found in the directory `output/` in the form of individual card images and a printable pdf document
 
 ```
 usage: generate.py [-h] [-l LANG] [-w WIDTH] [--height HEIGHT] [-f FONT]
+                   [-c CARD] [-d] [-b CARDBACK] [-rw REALWIDTH]
+                   [-rh REALHEIGHT] [-si] [-sp]
 
 Generate the drinking game cards.
 
@@ -33,10 +35,30 @@ optional arguments:
   -l LANG, --lang LANG  The language files to use. Default: 'en'
   -w WIDTH, --width WIDTH
                         The width of the generated cards in px. Default: 500
-  --height HEIGHT       The height of the generated cards in px. Default: 697
+  --height HEIGHT       The height of the generated cards in px. Default: 700
   -f FONT, --font FONT  The font to use for card generation. A corresponding
                         font file must be present in 'assets/fonts'. Default:
                         Planewalker
+  -c CARD, --card CARD  If this option is provided, only the card with the
+                        given name will be generated.
+  -d, --debug           If this argument is provided, text fields will be
+                        rendered with opaque squares behind them to easy
+                        template debugging.
+  -b CARDBACK, --cardback CARDBACK
+                        Full path to the image to put on the back of the
+                        cards. Default: '/home/joep/Documents/Projects/Drinker
+                        /assets/backside.png'
+  -rw REALWIDTH, --realwidth REALWIDTH
+                        The real width in mm of the printable cards. Default:
+                        63mm
+  -rh REALHEIGHT, --realheight REALHEIGHT
+                        The real height in mm of the printable cards. Default:
+                        88mm
+  -si, --skipimg        If this option is present, the card images will not be
+                        rerendered. Beware this can lead to weird errors if
+                        images are missing or incomplete.
+  -sp, --skippdf        If this option is present, no printable pdf will be
+                        generated
 ```
 
 ### About
