@@ -4,7 +4,7 @@ A freely distributed, open-source drinking game loosely based on the 4chan drink
 
 Rules are included in the game.
 
-#### Warning
+###### Copyright Issues
 I am a programmer, not an artist. As a result the images used for the card graphics are simple images found
 via Google. If your image is used in this game and you would like it removed, please contact me and I will fix
 this as fast as possible. No copyright infringement is intended.
@@ -40,14 +40,16 @@ optional arguments:
 ```
 
 ### Contributing
-Contributions are very welcome! You can contribute in the following forms:
+Contributions are very welcome! You can contribute in the following ways:
 * Fix spelling errors
 * Translate cards into different languages
 * Propose new cards
 * Contribute card graphics (a standard art style for every card instead of stupid google pictures would be awesome)
 * Report card balance issues
+* Suggest a proper name
 
-### History
+
+### About
 
 In early 2010, some people on 4chan came up with a drinking game[*](http://knowyourmeme.com/memes/4chan-drinking-game-cards). While
 it seemed like a lot of fun, it looked very crappy, was generally only funny to people who were actually on 
@@ -64,3 +66,10 @@ with the world.
 I have tried to make it as easy as possible to adjust the game to your own needs or add your own cards to it.
 
 Have fun!
+
+## License
+This code is licensed under the [GPL license.](https://raw.githubusercontent.com/Gargamel1989/Drinker/master/LICENSE)
+
+## Donations
+As I made this in my spare time for fun and love of booze, donations are not expected but still welcomed.
+If you feel like thanking me with money for some reason, you can donate at my BTC address: `1NnDRSfrk1nkHSXvY6GW1fMvsD3BYQisj1`. Thank you very much!
