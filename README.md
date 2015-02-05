@@ -49,6 +49,24 @@ Contributions are very welcome! You can contribute in the following ways:
 * Suggest a proper name
 
 
+##### Assets structure
+
+###### Card types
+
+There are currently 4 card types (Action, Backstab, Mandatory, Status). To add additional card types to the
+game, create a new directory under the `assets/types` directory. This directory should contain the following
+files:
+* rules.xml - Containing information about the card type, structured like `assets/types/rules.template.xml`
+* template.png - The template image for the card type
+
+###### Cards
+
+To add a custom card to the game, make a new directory under the `assets/cards` directory (or any subdirectory).
+This directory should contain the following files:
+* image.[jpg,png,gif,...] - The graphic to be used for the card
+* en/props.xml - Containing information about the card. This file should be put in a directory with the name of
+the language used to describe the properties and must be structured like `assets/cards/props.template.xml`
+
 ### About
 
 In early 2010, some people on 4chan came up with a drinking game[*](http://knowyourmeme.com/memes/4chan-drinking-game-cards). While
