@@ -2,7 +2,7 @@
 
 A freely distributed, open-source drinking game loosely based on the 4chan drinking game.
 
-Rules are included in the game.
+Rules are included with the game.
 
 ###### Copyright Issues
 I am a programmer, not an artist. As a result the artwork used for the card graphics are simple images found
