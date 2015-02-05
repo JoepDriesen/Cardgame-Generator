@@ -3,7 +3,7 @@
 	<!-- The name of this card type (Required). -->
 	<name>?</name>
 	
-	<!-- The box in which the card graphic should be contained -->
+	<!-- The box in which the card graphic should be contained (Optional) -->
 	<graphic x="?" y="?" w="?" h="?" />
 	
 	<!-- The rules for playing a card of this type (Required). -->
@@ -25,6 +25,9 @@
 		     And the following attributes are optional:
 		      - h: The height of the content. If given, the content will be 
 		           vertically centered in the content box (x, y, w, h)
+		      - multiline: true or false (default: false). If this is true, the
+		                   text will be allowed to split over multiple lines. Otherwise
+		                   this font size will be decreased to make it fit on 1 line
 		 -->
 		<name fontSize="?" x="?" y="?" w="?" h="?"/>
 		<rules fontSize="?" x="?" y="?" w="?" />

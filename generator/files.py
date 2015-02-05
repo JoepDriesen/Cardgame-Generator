@@ -13,19 +13,14 @@ ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
 CARD_TYPES_DIR = os.path.join(ASSETS_DIR, 'types')
 CARDS_DIR = os.path.join(ASSETS_DIR, 'cards')
 FONTS_DIR = os.path.join(ASSETS_DIR, 'fonts')
+BACKSIDE_FILE = os.path.join(ASSETS_DIR, 'backside.png')
 
 OUTPUT_DIR = os.path.join(BASE_DIR, 'output')
 OUTPUT_CARDS_DIR = os.path.join(OUTPUT_DIR, 'cards')
+OUTPUT_PRINTABLE_FILE = os.path.join(OUTPUT_DIR, 'printable_cards.pdf')
 
 
 class CardType(object):
-    
-    name = None
-    card_graphic_box = None
-    rules = None
-    
-    template_file = None
-    content = {}
     
     def __init__(self, card_type_dir):
         rules_file = os.path.join(card_type_dir, 'props.xml')
@@ -42,13 +37,9 @@ class CardType(object):
         if name_el is None:
             raise AttributeError('No <name> element was found in props.xml')
         graphic_el = card_type_xml.find('graphic')
-        if graphic_el is None:
-            raise AttributeError('No <graphic> element was found in props.xml')
-        if 'x' not in graphic_el.attrib or 'y' not in graphic_el.attrib or 'w' not in graphic_el.attrib or 'h' not in graphic_el.attrib:
-            raise AttributeError('<graphic> element missing a required attribute (x, y, w, h)')
-        rules_el = card_type_xml.find('rules')
-        if rules_el is None:
-            raise AttributeError('No <rules> element was found in props.xml')
+        if graphic_el is not None:
+            if 'x' not in graphic_el.attrib or 'y' not in graphic_el.attrib or 'w' not in graphic_el.attrib or 'h' not in graphic_el.attrib:
+                raise AttributeError('<graphic> element missing a required attribute (x, y, w, h)')
         content_el = card_type_xml.find('content')
         if content_el is None:
             raise AttributeError('No <content> element was found in props.xml')
@@ -57,24 +48,29 @@ class CardType(object):
                 raise AttributeError('Content element <{}> missing a required attribute (x, y, w)'.format(el.tag))
         
         self.name = name_el.text.strip()
-        self.card_graphic_box = (int(graphic_el.attrib['x']), int(graphic_el.attrib['y']), int(graphic_el.attrib['w']), int(graphic_el.attrib['h']))
-        self.rules = rules_el.text
+        if graphic_el:
+            self.card_graphic_box = (int(graphic_el.attrib['x']), int(graphic_el.attrib['y']), int(graphic_el.attrib['w']), int(graphic_el.attrib['h']))
+        else:
+            self.card_graphic_box = None
         
+        self.content = {}
         for el in content_el:
-            self.content[el.tag] = {key: int(val) for key,val in el.attrib.items()}
+            self.content[el.tag] = {key: self.convert(val) for key,val in el.attrib.items()}
+        
+    def convert(self, val):
+        try:
+            return int(val)
+        except ValueError as e:
+            if val.lower() == 'true':
+                return True
+            elif val.lower() == 'false':
+                return False
+            raise e
+        
+    def has_graphic(self):
+        return self.card_graphic_box is not None
 
 class Card(object):
-    
-    dir_name = None
-    lang = None
-    
-    props_file = None
-    image_file = None
-    
-    name = None
-    type = None
-    
-    other = {}
     
     def __init__(self, card_dir, lang, card_types):
         self.dir_name = card_dir.split('/')[-1]
@@ -89,9 +85,6 @@ class Card(object):
             file_name_no_ext = os.path.splitext(file)[0]
             if file_name_no_ext == 'image':
                 self.image_file = os.path.join(card_dir, file)
-                
-        if self.image_file is None or not os.path.isfile(self.image_file):
-            raise FileNotFoundError('image.[png,jpg,gif,...]')
         
         
         card_xml = ElementTree.parse(props_file).getroot()
@@ -113,11 +106,20 @@ class Card(object):
         except KeyError:
             raise AttributeError('The type given for this card (\'{}\') was not found, available choices are \"{}\"'.format(type_name, ', '.join(sorted(card_types.keys()))))
         
+        if self.type.has_graphic():
+            if self.image_file is None or not os.path.isfile(self.image_file):
+                raise FileNotFoundError('image.[png,jpg,gif,...]')
+        
+        self.other = {}
         for el in card_xml:
             if el.tag in ['name', 'type']:
                 continue
             
             self.other[el.tag] = el.text
+    
+    @property
+    def output_file(self):
+        return os.path.join(OUTPUT_CARDS_DIR, '{}.png'.format(self.dir_name))
         
     def get_content(self, content_name):
         if content_name == 'name':
