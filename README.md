@@ -5,8 +5,8 @@ A freely distributed, open-source drinking game loosely based on the 4chan drink
 Rules are included in the game.
 
 ###### Copyright Issues
-I am a programmer, not an artist. As a result the images used for the card graphics are simple images found
-via Google. If your image is used in this game and you would like it removed, please contact me and I will fix
+I am a programmer, not an artist. As a result the artwork used for the card graphics are simple images found
+via Google. If your work is used in this game and you would like to have it removed, please contact me and I will fix
 this as fast as possible. No copyright infringement is intended.
 
 
