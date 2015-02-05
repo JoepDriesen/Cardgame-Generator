@@ -1,0 +1,9 @@
+<card>
+	<name>Clusterfuck</name>
+	<type>mandatory</type>
+	<rules>
+		Flip a coin.
+		If heads, you must drink once for each player in the game.
+		If tails, every other player must drink once for every player in the game.
+	</rules>
+</card>

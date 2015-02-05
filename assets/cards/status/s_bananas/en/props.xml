@@ -1,0 +1,8 @@
+<card>
+	<name>Suddenly, Bananas</name>
+	<type>status</type>
+	<rules>
+		You must play the rest of the game with a banana in each hand.
+		If no bananas are available, be creative.
+	</rules>
+</card>
