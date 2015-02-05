@@ -114,5 +114,8 @@ This code is licensed under the [GPL license.](https://raw.githubusercontent.com
 As I made this in my spare time for fun and love of booze, donations are not expected but still welcomed.
 If you feel like thanking me with money for some reason, you can donate at my BTC address: `1NnDRSfrk1nkHSXvY6GW1fMvsD3BYQisj1`. Thank you very much!
 
-###### New cards
-* take 2 votes: wheter the discard pile should be shuffled back into the deck, wether this card should be shuffled back into the deck. Democracy wins.
+
+#### Todo
+* Add some more cards
+* Add a rating to cards so you can play multiple types of games (eg. If you just want to have fun, only use the cards with rating 1, if you want to get blasted, use all cards)
+* Add a sip count for discarding status card?
