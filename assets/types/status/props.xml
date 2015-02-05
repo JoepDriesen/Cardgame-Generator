@@ -1,5 +1,6 @@
 <cardType>
 	<name>Status</name>
+	<graphic x="42" y="82" w="418" h="304" />
 	<rules>
 		Status cards are the yellow cards. They must be placed face up in front of the player who received it. They can be removed from play in 3 ways:
 			* The cards rules mention when they should be removed from play
@@ -8,7 +9,8 @@
 			* Another card is played that allows the removal of status cards
 		As long as a status card is in play, its rules must be followed on every turn.
 	</rules>
-	<titleBox top="40" left="45" width="410" height="30" />
-	<graphicBox top="82" left="42" width="418" height="304" />
-	<rulesBox top="440" left="45" width="400" height="200" />
+	<content>
+		<name fontSize="30" x="45" y="40" w="410" h="30" />
+		<rules fontSize="20" x="45" y="440" w="400" />
+	</content>
 </cardType>

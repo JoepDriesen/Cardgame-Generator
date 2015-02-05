@@ -67,20 +67,24 @@ def assemble_card(card, card_width, card_height, font):
                 card_img.composite(card_graphic, top=int(cgb[1] * height_ratio), left=int(cgb[0] * width_ratio))
                 
                 with Drawing() as draw:
-                    # Draw the card title
                     draw.font = font.file
-                    draw.font_size = font.title_font_size
-                    ctb = card.type.card_title_box
-                    draw.text(x=ctb[0], y=ctb[1] + ctb[3] - round((ctb[3] - font.title_text_height)/2), body=card.name)
-                    draw(card_img)
                     
-                    # Draw the card rules
-                    draw.font_size = font.rules_font_size   
-                    crb = card.type.card_rules_box
-                    rules = '\n'.join(wrap_text(card.rule_lines, draw, card_img, crb[2]))
-                    draw.text(x=crb[0], y=crb[1] + font.rules_text_height, body=rules)
-                    draw(card_img)
-                
-                card_img.save(filename=output_file)
+                    for cn, props in card.type.content.items():
+                        content = card.get_content(cn)
+                        if content is None:
+                            continue
+                        draw.font_size = props['fontSize']
+                        if 'h' in props:
+                            y = props['y'] + props['h'] - round((props['h'] - (props['fontSize'] / font.font_size_to_text_height_ratio)) / 2)
+                        else:
+                            y = props['y'] + round(props['fontSize'] / font.font_size_to_text_height_ratio) 
+                        text = '\n'.join(wrap_text(content, draw, card_img, props['w']))
+                        
+                        if text == '':
+                            continue
+                        draw.text(x=props['x'], y=y, body=text)
+                        draw(card_img)
+                    
+                    card_img.save(filename=output_file)
                 
                 

@@ -21,17 +21,16 @@ OUTPUT_CARDS_DIR = os.path.join(OUTPUT_DIR, 'cards')
 class CardType(object):
     
     name = None
+    card_graphic_box = None
     rules = None
     
     template_file = None
-    card_title_box = None
-    card_graphic_box = None
-    card_rules_box = None
+    content = {}
     
     def __init__(self, card_type_dir):
-        rules_file = os.path.join(card_type_dir, 'rules.xml')
+        rules_file = os.path.join(card_type_dir, 'props.xml')
         if not os.path.isfile(rules_file):
-            raise FileNotFoundError('rules.xml')
+            raise FileNotFoundError('props.xml')
                 
         self.template_file = os.path.join(card_type_dir, 'template.png')
         if not os.path.isfile(self.template_file):
@@ -41,29 +40,41 @@ class CardType(object):
         
         name_el = card_type_xml.find('name')
         if name_el is None:
-            raise AttributeError('No <name> element was found in rules.xml')
-        self.name = name_el.text.strip()
-        
+            raise AttributeError('No <name> element was found in props.xml')
+        graphic_el = card_type_xml.find('graphic')
+        if graphic_el is None:
+            raise AttributeError('No <graphic> element was found in props.xml')
+        if 'x' not in graphic_el.attrib or 'y' not in graphic_el.attrib or 'w' not in graphic_el.attrib or 'h' not in graphic_el.attrib:
+            raise AttributeError('<graphic> element missing a required attribute (x, y, w, h)')
         rules_el = card_type_xml.find('rules')
         if rules_el is None:
-            raise AttributeError('No <rules> element was found in rules.xml')
+            raise AttributeError('No <rules> element was found in props.xml')
+        content_el = card_type_xml.find('content')
+        if content_el is None:
+            raise AttributeError('No <content> element was found in props.xml')
+        for el in content_el:
+            if 'x' not in el.attrib or 'x' not in el.attrib or 'x' not in el.attrib:
+                raise AttributeError('Content element <{}> missing a required attribute (x, y, w)'.format(el.tag))
+        
+        self.name = name_el.text.strip()
+        self.card_graphic_box = (int(graphic_el.attrib['x']), int(graphic_el.attrib['y']), int(graphic_el.attrib['w']), int(graphic_el.attrib['h']))
         self.rules = rules_el.text
         
-        tb = card_type_xml.find('titleBox')
-        if tb is None:
-            raise AttributeError('No <titleBox> element was found in rules.xml')
-        self.card_title_box = (int(tb.attrib['left']), int(tb.attrib['top']), int(tb.attrib['width']), int(tb.attrib['height']))
-        gb = card_type_xml.find('graphicBox')
-        if gb is None:
-            raise AttributeError('No <graphicBox> element was found in rules.xml')
-        self.card_graphic_box = (int(gb.attrib['left']), int(gb.attrib['top']), int(gb.attrib['width']), int(gb.attrib['height']))
-        rb = card_type_xml.find('rulesBox')
-        if rb is None:
-            raise AttributeError('No <rulesBox> element was found in rules.xml')
-        self.card_rules_box = (int(rb.attrib['left']), int(rb.attrib['top']), int(rb.attrib['width']), int(rb.attrib['height']))
-
+        for el in content_el:
+            self.content[el.tag] = {key: int(val) for key,val in el.attrib.items()}
 
 class Card(object):
+    
+    dir_name = None
+    lang = None
+    
+    props_file = None
+    image_file = None
+    
+    name = None
+    type = None
+    
+    other = {}
     
     def __init__(self, card_dir, lang, card_types):
         self.dir_name = card_dir.split('/')[-1]
@@ -86,50 +97,53 @@ class Card(object):
         card_xml = ElementTree.parse(props_file).getroot()
         
         name_el = card_xml.find('name')
-        if name_el is None:
-            raise AttributeError('No <name> element was found in rules.xml')
-        self.name = name_el.text.strip()
         
+        # Error checking
+        if name_el is None:
+            raise AttributeError('No <name> element was found in props.xml')
         type_el = card_xml.find('type')
         if type_el is None:
-            raise AttributeError('No <type> element was found in rules.xml')
+            raise AttributeError('No <type> element was found in props.xml')
+        
+        
+        self.name = name_el.text.strip()
         type_name = type_el.text.strip()
         try:
             self.type = card_types[type_name.lower()]
         except KeyError:
             raise AttributeError('The type given for this card (\'{}\') was not found, available choices are \"{}\"'.format(type_name, ', '.join(sorted(card_types.keys()))))
         
-        rules_el = card_xml.find('rules')
-        if rules_el is None:
-            raise AttributeError('No <rules> element was found in rules.xml')
-        self._rules = rules_el.text
-    
-    @property
-    def rules(self):
-        return '\n'.join(self.rule_lines)
-    
-    @property
-    def rule_lines(self):
-        rule_lines = [line.strip() for line in self._rules.split('\n')]
-        if len(rule_lines) > 0 and rule_lines[0] == '':
-            del rule_lines[0]
-        if len(rule_lines) > 0 and rule_lines[-1] == '':
-            del rule_lines[-1]
-        return rule_lines
+        for el in card_xml:
+            if el.tag in ['name', 'type']:
+                continue
+            
+            self.other[el.tag] = el.text
+        
+    def get_content(self, content_name):
+        if content_name == 'name':
+            content = self.name
+        elif content_name == 'type':
+            content = self.type.name
+        else:
+            content = self.other.get(content_name, None)
+        
+        if content is None:
+            return None
+            
+        lines = [line.strip() for line in content.split('\n')]
+        if len(lines) > 0 and lines[0] == '':
+            del lines[0]
+        if len(lines) > 0 and lines[-1] == '':
+            del lines[-1]
+        
+        return lines
         
 class Font(object):
     
-    def __init__(self, name, file, 
-                 title_font_size, title_text_height,
-                 rules_font_size, rules_text_height):
+    def __init__(self, name, file, font_size_to_text_height_ratio):
         self.name = name
         self.file = file
-        
-        self.title_font_size = title_font_size
-        self.title_text_height = title_text_height
-        
-        self.rules_font_size = rules_font_size
-        self.rules_text_height = rules_text_height
+        self.font_size_to_text_height_ratio = float(font_size_to_text_height_ratio)
         
 def parse_card_types():
     for file in os.listdir(path=CARD_TYPES_DIR):
@@ -164,7 +178,7 @@ def get_font_file(font_name):
     it is not present as a system font, the default system font will be 
     used instead.
     
-    """ 
+    """
     for file in os.listdir(path=FONTS_DIR):
         if font_name == os.path.splitext(file)[0]:
             return os.path.join(FONTS_DIR, file)
@@ -182,25 +196,14 @@ def parse_fonts():
         if not 'name' in font_xml.attrib:
             raise AttributeError('Font without name found in \'fonts.xml\', this property is required.')
         name = font_xml.attrib['name']
-        
-        title_el = font_xml.find('title')
-        if title_el is None:
-            raise AttributeError('Font \'{}\' does not have a title element, this element is required'.format(name))
-        if 'size' not in title_el.attrib or 'height' not in title_el.attrib:
-            raise AttributeError('Font \'{}\': title element does not have all required attributes (size, height)'.format(name))
-        
-        rules_el = font_xml.find('rules')
-        if rules_el is None:
-            raise AttributeError('Font \'{}\' does not have a rules element, this element is required'.format(name))
-        if 'size' not in rules_el.attrib or 'height' not in rules_el.attrib:
-            raise AttributeError('Font \'{}\': rules element does not have all required attributes (size, height)'.format(name))
+        if not 'sizeToHeightRatio' in font_xml.attrib:
+            fsttr = 1
+        else:
+            fsttr = font_xml.attrib['sizeToHeightRatio']
         
         fonts[name.lower()] = Font(name=name,
                                    file=get_font_file(name),
-                                   title_font_size=int(title_el.attrib['size']),
-                                   title_text_height=int(title_el.attrib['height']),
-                                   rules_font_size=int(rules_el.attrib['size']),
-                                   rules_text_height=int(rules_el.attrib['height']))
+                                   font_size_to_text_height_ratio=fsttr)
         
     return fonts
 

@@ -1,6 +1,15 @@
 <fontProperties>
-	<font name="Planewalker" file="Planewalker.otf">
-		<title size="30" height="22"/>
-		<rules size="20" height="20" />
-	</font>
+	<!-- 
+		This element is required for fonts used to generate cards. It supports
+		the following attributes:
+			- name: The name of the font (Required)
+			- sizeToHeightRatio: The factor of the font size to line height ratio for
+			                     this font. Used to vertically align text 
+			                     (Optional, default: 1). 
+		
+		First the directory 'assets/fonts' will be searched for a font file with the
+		given name (and any extension). If this file is not found, it is assumed a
+		system font with this name can be used.
+	-->
+	<font name="Planewalker" sizeToHeightRatio="1.4" />
 </fontProperties>

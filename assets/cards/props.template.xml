@@ -1,5 +1,15 @@
 <card>
-	<name></name>
-	<type></type>
-	<rules></rules>
+
+	<!-- The name of this card (Required). -->
+	<name>?</name>
+	
+	<!-- The type of this card, a card type with this name must be present
+	     in 'assets/types' (Required, Case Insensitive). -->
+	<type>?</type>
+	
+	<!-- Any other elements are optional, their contents will be displayed
+	     on the card if the card type used has a corresponding tag in its
+	     'contents' section (Optional). -->
+	<rules>?</rules>
+	
 </card>
