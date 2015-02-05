@@ -1,15 +1,27 @@
 # Drinking Game
 
-A freely distributed, open-source drinking game loosely based on the 4chan drinking game. 
+A freely distributed, open-source drinking game loosely based on the 4chan drinking game.
+
+Rules are included in the game.
+
+#### Warning
+I am a programmer, not an artist. As a result the images used for the card graphics are simple images found
+via Google. If your image is used in this game and you would like it removed, please contact me and I will fix
+this as fast as possible. No copyright infringement is intended.
 
 
 ### Requirements
 * Python >3.0
 
 ### How to use
+The game is distibuted as a collection of art assets and a Python script to assemble the assets into
+printable cards.
+The cards should be printed and cut (and preferably plastified, as they will get a lot of liquor on them), after
+which the game is ready to play.
 
-1. Install the python packages in the `requirements.txt` file
+1. Install the Python packages in the `requirements.txt` file (`pip install -r requirements.txt`)
 2. Run the `generate.py` with the required options
+3. Output will be found in the directory `output/` in the form of individual card images or a printable pdf document
 
 ```
 usage: generate.py [-h] [-l LANG] [-w WIDTH] [--height HEIGHT] [-f FONT]
@@ -27,7 +39,13 @@ optional arguments:
                         Planewalker
 ```
 
-3. Output will be found in the directory `output/` in the form of individual card images or a printable pdf document
+### Contributing
+Contributions are very welcome! You can contribute in the following forms:
+* Fix spelling errors
+* Translate cards into different languages
+* Propose new cards
+* Contribute card graphics (a standard art style for every card instead of stupid google pictures would be awesome)
+* Report card balance issues
 
 ### History
 
