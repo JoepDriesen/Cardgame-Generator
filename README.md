@@ -27,6 +27,7 @@ optional arguments:
                         Planewalker
 ```
 
+3. Output will be found in the directory `output/` in the form of individual card images or a printable pdf document
 
 ### History
 

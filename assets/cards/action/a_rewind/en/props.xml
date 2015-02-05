@@ -1,0 +1,7 @@
+<card>
+	<name>Rewind</name>
+	<type>action</type>
+	<rules>
+		Replay the last played card.
+	</rules>
+</card>

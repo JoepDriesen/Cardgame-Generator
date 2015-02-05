@@ -1,0 +1,8 @@
+<card>
+	<name>Rock, paper, scissors</name>
+	<type>action</type>
+	<rules>
+		Choose someone to play rock, paper, scissors with.
+		The loser must take 3 drinks.
+	</rules>
+</card>

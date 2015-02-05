@@ -1,0 +1,9 @@
+<cardType>
+	<name>Mandatory</name>
+	<rules>
+		Mandatory cards are the red cards. They usually require every player to complete a certain action and must be discarded afterwards.
+	</rules>
+	<titleBox top="40" left="45" width="410" height="30" />
+	<graphicBox top="82" left="42" width="418" height="304" />
+	<rulesBox top="440" left="45" width="400" height="200" />
+</cardType>

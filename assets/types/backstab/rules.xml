@@ -1,0 +1,10 @@
+<cardType>
+	<name>Backstab</name>
+	<rules>
+		Backstab cards are the purple cards. They may be kept face down in front of the player who received it without showing its content to the other players.
+		The owner of a backstab card may choose to use it whenever he sees fit during the game.
+	</rules>
+	<titleBox top="40" left="45" width="410" height="30" />
+	<graphicBox top="82" left="42" width="418" height="304" />
+	<rulesBox top="440" left="45" width="400" height="200" />
+</cardType>

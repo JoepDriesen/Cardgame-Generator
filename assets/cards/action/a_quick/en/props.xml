@@ -1,0 +1,8 @@
+<card>
+	<name>Quick Sip</name>
+	<type>action</type>
+	<rules>
+		Take a big gulp.
+		Draw again.
+	</rules>
+</card>

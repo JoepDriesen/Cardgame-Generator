@@ -1,0 +1,8 @@
+<card>
+	<name>Waterfall</name>
+	<type>action</type>
+	<rules>
+		When you start drinking your drink, everybody must start drinking as well.
+		You may stop drinking at any time until your drink is empty. Everybody else can only stop when you have stopped.
+	</rules>
+</card>
