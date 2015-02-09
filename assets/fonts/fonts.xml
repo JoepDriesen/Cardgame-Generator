@@ -11,5 +11,5 @@
 		given name (and any extension). If this file is not found, it is assumed a
 		system font with this name can be used.
 	-->
-	<font name="Planewalker" sizeToHeightRatio="1.4" />
+	<font name="" sizeToHeightRatio="" />
 </fontProperties>

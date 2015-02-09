@@ -1,8 +1,0 @@
-<card>
-	<name>Charging...</name>
-	<type>action</type>
-	<rules>
-		Take a an empty cup. For the next round, everytime somebody has to drink due to a cards effect, you must pour the same amount in this cup.
-		When it is your turn a again, drink the entire cup in 1 go.
-	</rules>
-</card>

@@ -1,8 +1,0 @@
-<card>
-	<name>Speak no evil</name>
-	<type>status</type>
-	<rules>
-		You may pick any word.
-		Whenever anybody says this word, he or she must drink.
-	</rules>
-</card>

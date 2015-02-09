@@ -1,8 +1,0 @@
-<card>
-	<name>Drunk dial</name>
-	<type>action</type>
-	<rules>
-		Do not show this card to anyone. Act as if it is a Backstab card.
-		At any point during the game, call any person who is also playing. If they answer the phone, they must take 4 drinks, otherwise you must drink twice.
-	</rules>
-</card>

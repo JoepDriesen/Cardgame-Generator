@@ -1,9 +1,0 @@
-<cardType>
-	<name>Backstab</name>
-	<graphic x="36" y="68" w="328" h="242" />
-	<content>
-		<name fontSize="30" x="45" y="42" w="410" h="30" />
-		<type fontSize="28" x="50" y="400" w="400" />
-		<rules fontSize="22" x="50" y="447" w="400" multiline="true" />
-	</content>
-</cardType>

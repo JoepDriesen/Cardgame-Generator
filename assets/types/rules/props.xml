@@ -1,7 +1,0 @@
-<cardType>
-	<name>Rules</name>
-	<content>
-		<name fontSize="30" x="45" y="42" w="410" h="30" />
-		<text fontSize="22" x="50" y="95" w="400" multiline="true" />
-	</content>
-</cardType>
