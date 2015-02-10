@@ -69,7 +69,3 @@ the language used to describe the properties and must be structured like `assets
 
 ## License
 This code is licensed under the [GPL license.](https://raw.githubusercontent.com/Gargamel1989/Drinker/master/LICENSE)
-
-## Donations
-As I made this in my spare time for fun and love of booze, donations are not expected but still welcomed.
-If you feel like thanking me with money for some reason, you can donate at my BTC address: `1NnDRSfrk1nkHSXvY6GW1fMvsD3BYQisj1`. Thank you very much!
