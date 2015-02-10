@@ -69,3 +69,9 @@ the language used to describe the properties and must be structured like `assets
 
 ## License
 This code is licensed under the [GPL license.](https://raw.githubusercontent.com/Gargamel1989/Drinker/master/LICENSE)
+
+
+### TODO
+* Generalize image content
+* supply assets and input directory on command line
+* optional cardback
