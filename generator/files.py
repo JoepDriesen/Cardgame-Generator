@@ -48,7 +48,7 @@ class CardType(object):
                 raise AttributeError('Content element <{}> missing a required attribute (x, y, w)'.format(el.tag))
         
         self.name = name_el.text.strip()
-        if graphic_el:
+        if graphic_el is not None:
             self.card_graphic_box = (int(graphic_el.attrib['x']), int(graphic_el.attrib['y']), int(graphic_el.attrib['w']), int(graphic_el.attrib['h']))
         else:
             self.card_graphic_box = None

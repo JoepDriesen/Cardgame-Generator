@@ -58,8 +58,6 @@ def assemble_card(card, card_width, card_height, font, debug):
             # Resize the template so it fits to the required dimensions
             card_template.resize(width=card_width, height=card_height)
             
-            card_img.composite(card_template, top=0, left=0)
-            
             if card.type.has_graphic():
                 # Load image graphic
                 with Image(filename=card.image_file).clone() as card_graphic:
@@ -68,7 +66,10 @@ def assemble_card(card, card_width, card_height, font, debug):
                     card_graphic.resize(width=round(cgb[2] * width_ratio), height=round(cgb[3] * height_ratio))
                     # Put the card graphic on the image
                     card_img.composite(card_graphic, top=round(cgb[1] * height_ratio), left=round(cgb[0] * width_ratio))
-                
+            
+            # Put the card template over the image graphic
+            card_img.composite(card_template, top=0, left=0)
+            
             with Drawing() as draw:
                 draw.font = font.file
                 if debug:
