@@ -4,13 +4,15 @@ Created on Feb 4, 2015
 @author: Joep Driesen
 '''
 import os
-from generator.files import OUTPUT_DIR, OUTPUT_CARDS_DIR
+
 from wand.image import Image
 from wand.drawing import Drawing
 import textwrap
 from wand.color import Color
 
 def setup():
+    from generator.files import OUTPUT_DIR, OUTPUT_CARDS_DIR
+
     if not os.path.isdir(OUTPUT_DIR):
         os.mkdir(OUTPUT_DIR)
     if not os.path.isdir(OUTPUT_CARDS_DIR):

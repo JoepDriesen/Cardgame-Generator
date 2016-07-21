@@ -4,9 +4,8 @@ Created on Feb 4, 2015
 
 @author: Joep Driesen
 '''
-import argparse
-from generator.files import parse_card_types, parse_cards, get_font,\
-    BACKSIDE_FILE, OUTPUT_PRINTABLE_FILE
+import argparse, os
+from generator.files import set_paths, parse_card_types, parse_cards, get_font
 from generator.assemble import assemble_card
 from generator.printable import PrintableCardsPDF
 
@@ -17,7 +16,6 @@ DEFAULT_HEIGHT = 700 # px
 DEFAULT_REAL_HEIGHT = 88 # mm
 DEFAULT_FONT = 'Planewalker'
 DEFAULT_FONTSIZE = 20
-DEFAULT_BACKSIDE = BACKSIDE_FILE
 
 def generate():
     parser = argparse.ArgumentParser(description='Generate the drinking game cards.')
@@ -27,13 +25,25 @@ def generate():
     parser.add_argument('-f', '--font', action='store', default=DEFAULT_FONT, help='The font to use for card generation. A corresponding font file must be present in \'assets/fonts\'. Default: {}'.format(DEFAULT_FONT))
     parser.add_argument('-c', '--card', action='store', default=None, help='If this option is provided, only the card with the given name will be generated.')
     parser.add_argument('-d', '--debug', action='store_true', help='If this argument is provided, text fields will be rendered with opaque squares behind them to easy template debugging.')
-    parser.add_argument('-b', '--cardback', action='store', default=DEFAULT_BACKSIDE, help='Full path to the image to put on the back of the cards. Default: \'{}\''.format(DEFAULT_BACKSIDE))
     parser.add_argument('-rw', '--realwidth', action='store', default=DEFAULT_REAL_WIDTH, help='The real width in mm of the printable cards. Default: {}mm'.format(DEFAULT_REAL_WIDTH))
     parser.add_argument('-rh', '--realheight', action='store', default=DEFAULT_REAL_HEIGHT, help='The real height in mm of the printable cards. Default: {}mm'.format(DEFAULT_REAL_HEIGHT))
     parser.add_argument('-si', '--skipimg', action='store_true', help='If this option is present, the card images will not be rerendered. Beware this can lead to weird errors if images are missing or incomplete.')
     parser.add_argument('-sp', '--skippdf', action='store_true', help='If this option is present, no printable pdf will be generated')
+    parser.add_argument('-a', '--asset_folder', action='store', default=None, help='The location of the folder containing the assets to use for generating the card game. If omitted, the current working directory will be searched for a folder with the name `assets`')
     args = parser.parse_args()
-    
+
+    if args.asset_folder is None:
+        assets_dir = os.path.join(os.getcwd(), 'assets')
+
+    else:
+        assets_dir = os.path.abspath(args.asset_folder)
+
+    if not os.path.isdir(assets_dir):
+        print('ERROR: Directory `{}` does not exist, exiting...'.format(assets_dir))
+        exit(1)
+
+    set_paths(assets_dir, os.getcwd())
+
     card_types = {card_type.name.lower(): card_type for card_type in parse_card_types()}
     
     cards_generated = {}
@@ -57,10 +67,15 @@ def generate():
         print('{:15s} {:>3}'.format('Total', sum(cards_generated.values())))
     
     if not args.skippdf:
-        print('\nGenerating printable pdf, this may take a while...')
-        pdf = PrintableCardsPDF(cards=cards, backsides_image=args.cardback, real_width=args.realwidth, real_height=args.realheight)
-        pdf.render()
-        pdf.output(name=OUTPUT_PRINTABLE_FILE, dest='F')
+        if len(cards_generated) > 0:
+            from generator.files import BACKSIDE_FILE, OUTPUT_PRINTABLE_FILE
+
+            print('\nGenerating printable pdf, this may take a while...')
+            pdf = PrintableCardsPDF(cards=cards, backsides_image=BACKSIDE_FILE, real_width=args.realwidth, real_height=args.realheight)
+            pdf.render()
+            pdf.output(name=OUTPUT_PRINTABLE_FILE, dest='F')
+        else:
+            print('\nNo cards generating, skipping pdf output.')
         
     print('Done')
     

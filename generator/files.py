@@ -7,18 +7,28 @@ import os
 from xml.etree import ElementTree
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+ASSETS_DIR = None
+CARD_TYPES_DIR = None
+CARDS_DIR = None
+FONTS_DIR = None
+BACKSIDE_FILE = None
 
-ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
-CARD_TYPES_DIR = os.path.join(ASSETS_DIR, 'types')
-CARDS_DIR = os.path.join(ASSETS_DIR, 'cards')
-FONTS_DIR = os.path.join(ASSETS_DIR, 'fonts')
-BACKSIDE_FILE = os.path.join(ASSETS_DIR, 'backside.png')
+OUTPUT_DIR = None
+OUTPUT_CARDS_DIR = None
+OUTPUT_PRINTABLE_FILE = None
 
-OUTPUT_DIR = os.path.join(BASE_DIR, 'output')
-OUTPUT_CARDS_DIR = os.path.join(OUTPUT_DIR, 'cards')
-OUTPUT_PRINTABLE_FILE = os.path.join(OUTPUT_DIR, 'printable_cards.pdf')
+def set_paths(assets_dir, output_dir):
+    global ASSETS_DIR, CARD_TYPES_DIR, CARDS_DIR, FONTS_DIR, BACKSIDE_FILE, \
+        OUTPUT_DIR, OUTPUT_CARDS_DIR, OUTPUT_PRINTABLE_FILE
+    ASSETS_DIR = assets_dir
+    CARD_TYPES_DIR = os.path.join(ASSETS_DIR, 'types')
+    CARDS_DIR = os.path.join(ASSETS_DIR, 'cards')
+    FONTS_DIR = os.path.join(ASSETS_DIR, 'fonts')
+    BACKSIDE_FILE = os.path.join(ASSETS_DIR, 'backside.png')
 
+    OUTPUT_DIR = output_dir
+    OUTPUT_CARDS_DIR = os.path.join(OUTPUT_DIR, 'cards')
+    OUTPUT_PRINTABLE_FILE = os.path.join(OUTPUT_DIR, 'printable_cards.pdf')
 
 class CardType(object):
     
@@ -159,7 +169,10 @@ def parse_card_types():
     return
 
 
-def parse_cards(lang, card_types, base_dir=CARDS_DIR):
+def parse_cards(lang, card_types, base_dir=None):
+    if base_dir is None:
+        base_dir = CARDS_DIR
+
     for file in os.listdir(path=base_dir):
         abs_path = os.path.join(base_dir, file)
         if os.path.isdir(abs_path):
@@ -209,9 +222,14 @@ def parse_fonts():
         
     return fonts
 
-_FONTS = parse_fonts()
+_FONTS = None
 
 def get_font(font_name):
+    global _FONTS
+
+    if _FONTS is None:
+        _FONTS = parse_fonts()
+
     try:
         return _FONTS[font_name.lower()]
     except KeyError:
