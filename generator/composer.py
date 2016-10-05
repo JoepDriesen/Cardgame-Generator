@@ -1,9 +1,10 @@
 import os, xml.etree.ElementTree as et
 from PIL import Image, ImageDraw, ImageFont
+from generator.utils import get_image_size
 
 def compose_card( card, output_directory, font_imports_file=None, debug=False ):
 
-    abs_path = os.path.join( output_directory, '{}.png'.format( card.name ) )
+    card.image_file = os.path.join( output_directory, '{}.png'.format( card.name ) )
     t = card.card_type
     template_size = get_image_size( t.template_file )
 
@@ -122,7 +123,7 @@ def compose_card( card, output_directory, font_imports_file=None, debug=False ):
                         draw.text( ( x, y ), line, font=font, fill=c['color'] )
                         y = inc_y( y )
             
-    im.save( abs_path )
+    im.save( card.image_file )
 
     if debug:
         print('    Finished composing card: {}'.format( card.name ) )
@@ -140,141 +141,3 @@ def remove_last_word( text ):
         word = letter + word
     
     return rest, word
-
-
-"""
-    svg = et.Element( "svg", attrib={
-        'version': '1.2',
-        'baseProfile': 'tiny',
-        'xmlns': "http://www.w3.org/2000/svg",
-        'xmlns:ev': "http://www.w3.org/2001/xml-events",
-        'xmlns:xlink': "http://www.w3.org/1999/xlink",
-        'width': str( template_size[0] ),
-        'height': str( template_size[1] )
-    } )
-
-    defs = et.SubElement( svg, 'defs' )
-   
-    if font_imports_file:
-    
-        # Add font imports
-        style = et.SubElement( defs, 'style', attrib={ 'type': 'text/css' } )
-        with open( font_imports_file, 'r' ) as f:
-            style.text = f.read()
-
-    # Add template image
-    et.SubElement( svg, 'image', attrib={
-        'x': '0',
-        'y': '0',
-        'width': str( template_size[0] ),
-        'height': str( template_size[1] ),
-        'xlink:href': t.template_file
-    } )
-
-    # Add text elements
-    for c, a in t.content.items():
-
-        if c in card.elements:
-            
-            text = card.elements[c]
-
-            if not a['multiline']:
-
-                t = et.SubElement( svg, 'text', attrib={
-                    'x': str( a['x'] ),
-                    'y': str( a['y'] ),
-                    'font-family': a['font-family'],
-                    'font-size': str( a['font-size'] ),
-                    'font-style': str( a['font-style'] ),
-                    'font-weight': str( a['font-weight'] ),
-                    'fill': a['color']
-                } )
-                t.text = text
-
-            else:
-
-                t = et.SubElement( svg, 'textArea', attrib={
-                    'x': str( a['x'] ),
-                    'y': str( a['y'] ),
-                    'width': str( a['w'] ),
-                    'height': str( a['h'] ),
-                    'font-family': a['font-family'],
-                    'font-size': str( a['font-size'] ),
-                    'font-style': str( a['font-style'] ),
-                    'font-weight': str( a['font-weight'] ),
-                    'fill': a['color'],
-                } )
-                t.text = text
-
-
-    tree = et.ElementTree( svg )
-    tree.write( abs_path, encoding='utf-8', xml_declaration=True )
-
-
-    dwg = svgwrite.Drawing( os.path.join( output_directory, '{}.svg'.format( card.name ) ), size=template_size, profile='tiny' )
-
-    dwg.add( dwg.image( t.template_file, insert=( 0, 0 ), size=template_size ) )
-
-    for el_name in card.elements:
-
-        attr = t.content[ el_name ]
-        
-        if attr.get( 'multiline', False ):
-            dwg.add( dwg.textArea(
-                text=card.elements[ el_name ],
-                insert=( attr[ 'x' ], attr[ 'y' ] ),
-                size=( attr[ 'w' ], attr.get( 'h', 10000 ) ),
-                fill=attr[ 'fontColor' ],
-                font_family=attr[ 'font' ],
-                font_size=attr[ 'fontSize' ]
-            ) )
-
-        else:
-            dwg.add( dwg.text(
-                text=card.elements[ el_name ],
-                insert=( attr[ 'x' ], attr[ 'y' ] ),
-                fill=attr[ 'fontColor' ],
-                font_family=attr[ 'font' ],
-                font_size=attr[ 'fontSize' ]
-            ) )
-            
-    dwg.save()
-"""
-
-import struct
-import imghdr
-
-def get_image_size(fname):
-    '''Determine the image type of fhandle and return its size.
-    from draco'''
-    with open(fname, 'rb') as fhandle:
-        head = fhandle.read(24)
-        if len(head) != 24:
-            return
-        if imghdr.what(fname) == 'png':
-            check = struct.unpack('>i', head[4:8])[0]
-            if check != 0x0d0a1a0a:
-                return
-            width, height = struct.unpack('>ii', head[16:24])
-        elif imghdr.what(fname) == 'gif':
-            width, height = struct.unpack('<HH', head[6:10])
-        elif imghdr.what(fname) == 'jpeg':
-            try:
-                fhandle.seek(0) # Read 0xff next
-                size = 2
-                ftype = 0
-                while not 0xc0 <= ftype <= 0xcf:
-                    fhandle.seek(size, 1)
-                    byte = fhandle.read(1)
-                    while ord(byte) == 0xff:
-                        byte = fhandle.read(1)
-                    ftype = ord(byte)
-                    size = struct.unpack('>H', fhandle.read(2))[0] - 2
-                # We are at a SOFn block
-                fhandle.seek(1, 1)  # Skip `precision' byte.
-                height, width = struct.unpack('>HH', fhandle.read(4))
-            except Exception: #IGNORE:W0703
-                return
-        else:
-            return
-        return width, height
