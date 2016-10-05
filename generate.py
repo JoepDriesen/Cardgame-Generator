@@ -9,10 +9,11 @@ def generate():
             formatter_class=argparse.ArgumentDefaultsHelpFormatter )
 
     parser.add_argument( '-t', '--types-folder', action='store', default='./assets/types/', help='The location of the folder containing the xml property files of the available game card types.' )
-    parser.add_argument( '-f', '--fonts-folder', action='store', default='./assets/fonts/', help='The location of the folder containing the font files used in the game cards.' )
+    parser.add_argument( '-f', '--fonts-folder', action='store', default='./assets/fonts/', help='The location of the folder containing the font files used by the card types.' )
     parser.add_argument( '-c', '--cards-folder', action='store', default='./assets/cards/', help='The location of the folder containing the xml property files of the game cards to be generated.' )
     parser.add_argument( '-o', '--output-folder', action='store', default='./output/', help='The location of the folder in which to store generated cards.' )
     parser.add_argument( '-l', '--language', action='store', default='en', help='The language to use when generating cards.' )
+    parser.add_argument( '-s', '--single-card', action='store', default=None, help='If provided, only the card with this folder name will be generated.' )
 
     parser.add_argument( '-d', '--debug', action='store_true', help='Show debug output' )
 
@@ -36,8 +37,12 @@ def generate():
     if not os.path.exists( output_folder ):
         os.mkdir( output_folder )
 
+    print( 'Composing cards...' )
+
     for card in cards:
-        compose_card( card=card, output_directory=output_folder, debug=args.debug )
+
+        if args.single_card is None or args.single_card == card.name:
+            compose_card( card=card, output_directory=output_folder, debug=args.debug )
 
 if __name__ == '__main__':
     generate()

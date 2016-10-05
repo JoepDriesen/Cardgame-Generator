@@ -1,4 +1,4 @@
-import os
+import os, re
 from xml.etree import ElementTree as et
 
 class CardType( object ):
@@ -7,6 +7,13 @@ class CardType( object ):
         self.name = name
         self.content = content
         self.template_file = template_file
+
+        self.font_files = {}
+        for c in self.content.values():
+                        
+            if c.get( 'font-file', None ) is not None:
+                # File font
+                self.font_files[os.path.basename( c['font-file'] )] = c['font-file']
 
 
 class Card( object ):
@@ -43,23 +50,41 @@ def parse_type( types_directory, type_directory, fonts_directory, debug=False ):
         if el.tag == 'text':
 
             if 'id' not in el.attrib:
-                raise AttributeError( '<text> element is missing a required \'id\' attribute in card properties xml: {}'.format( props_file ) )
+                raise AttributeError( '<text> element is missing a required \'id\' attribute in card type properties xml: {}'.format( props_file ) )
 
-            if 'font' not in el.attrib:
-                raise AttributeError( '<text> element is missing a required \'font\' attribute in card properties xml: {}'.format( props_file ) )
+            if 'font-file' not in el.attrib and 'font-family' not in el.attrib:
+                raise AttributeError( '<text> element is missing a required \'font-family\' or \'font-file\' attribute in card type properties xml: {}'.format( props_file ) )
 
-            if not os.path.isfile( os.path.join( fonts_directory, el.attrib['font'] ) ):
-                raise FileNotFoundError( os.path.join( fonts_directory, el.attrib['font'] ) )
+            if 'font-file' in el.attrib:
+                font_file = os.path.join( fonts_directory, el.attrib.get( 'font-file' ) )
+
+                if not os.path.isfile( font_file ):
+                    raise FileNotFoundError( font_file )
+
+            else:
+                font_file = None
+
+            if 'font-size' not in el.attrib:
+                raise AttributeError( '<text> element is missing a required \'font-size\' attribute in card type properties xml: {}'.format( props_file ) )
+
+            if not re.match( '#[a-fA-F0-9]{6}', el.attrib['color'] ):
+                raise AttributeError( '\'color\' attribute of <text> element should be in hexadecimal format (e.g. #ffffff) in type properties xml: {}'.format( props_file ) )
 
             content[el.attrib.get( 'id' )] = {
                 'type': 'text',
                 'id': el.attrib.get( 'id' ),
-                'font': el.attrib.get( 'font' ),
-                'fontSize': int( el.attrib.get( 'fontSize', 10 ) ), 
+                'font-family': el.attrib.get( 'font-family', None ),
+                'font-file': font_file,
+                'font-size': int( el.attrib.get( 'font-size' ) ), 
+                'font-style': el.attrib.get( 'font-style', 'regular' ), 
+                'font-weight': el.attrib.get( 'font-weight', '400' ), 
+                'color': el.attrib.get( 'color', 'rgb(0,0,0)' ).strip(), 
                 'x': int( el.attrib.get( 'x', 0 ) ),
                 'y': int( el.attrib.get( 'y', 0 ) ),
                 'w': int( el.attrib.get( 'w', 0 ) ),
                 'h': int( el.attrib.get( 'h', 0 ) ),
+                'anchor': el.attrib.get( 'anchor', 'top' ),
+                'align': el.attrib.get( 'align', 'left' ),
                 'multiline': el.attrib.get( 'multiline', 'false' ) in [ 'True', 'true', 1, '1', 't', 'y', 'yes' ],
             }
 
@@ -139,9 +164,12 @@ def parse_card( cards_directory, card_name, language, card_types, debug=False ):
 
         for_el = card_xml.find( c['id'] )
         if for_el is None:
-            raise et.ParseError( 'No <{}> element was found in card properties xml: {}'.format( c['id'], abs_path ) )
 
-        elements[c['id']] = for_el.text.strip()
+            if c.get( 'required', False ):
+                raise et.ParseError( 'No <{}> element was found in card properties xml: {}'.format( c['id'], abs_path ) )
+
+        else:
+            elements[c['id']] = for_el.text.strip()
 
     return Card( name=card_name, card_type=card_type, elements=elements )
 
