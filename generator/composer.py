@@ -17,13 +17,11 @@ def compose_card( card, output_directory, debug ):
         dwg.add( dwg.text(
             text=card.elements[ el_name ],
             insert=( attr[ 'x' ], attr[ 'y' ] ),
+            fill=svgwrite.rgb( 33, 33, 33 ),
             font_family=attr[ 'font' ],
             font_size=attr[ 'fontSize' ]
         ) )
             
-
-
-    #dwg.add( dwg.text( card.elements['name'], insert=( 26 , 38 ), fill=svgwrite.rgb( 33, 33, 33 ), font_family=card, font_size=16, font_weight='bold' ) )
     dwg.save()
 
 import struct
