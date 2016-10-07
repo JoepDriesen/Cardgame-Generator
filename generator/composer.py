@@ -13,7 +13,7 @@ def compose_card( card, card_width, card_height, output_directory, debug=False )
     for el_name, c in t.content.items():
 
         if c['type'] == 'image':
-
+            
             w = c['w']
             if type( w ) == str:
                 w = int( card_width * ( int( w.replace( '%', '' ) ) / 100.0 ) )
@@ -28,7 +28,19 @@ def compose_card( card, card_width, card_height, output_directory, debug=False )
             if ( i_w != w or i_h != h ):
                 paste_im = paste_im.resize( ( w, h ) )
 
-            im.paste( paste_im, ( c['x'], c['y'] , c['x'] + w, c['y'] + h ) )
+            x = c['x']
+            if c['align'] == 'center':
+                x = int( x - ( w / 2 ) )
+            elif c['align'] == 'right':
+                x = x - w
+
+            y = c['y']
+            if c['anchor'] == 'middle':
+                y = int( y - ( h / 2 ) )
+            elif c['anchor'] == 'bottom':
+                y = y - h
+
+            im.paste( paste_im, ( x, y , x + w, y + h ) )
 
         elif c['type'] == 'text':
         
@@ -38,7 +50,6 @@ def compose_card( card, card_width, card_height, output_directory, debug=False )
             font = ImageFont.truetype( c['font-file'], c['font-size'] )
             
             text = card.elements[el_name]
-    
             text = text.replace( '*', '•' )
     
             if not c['multiline']:
@@ -55,7 +66,7 @@ def compose_card( card, card_width, card_height, output_directory, debug=False )
     
                 else:
                     x = c['x']
-    
+                
                 draw.text( ( x, c['y'] ), text, font=font, fill=c['color'] )
     
             else:

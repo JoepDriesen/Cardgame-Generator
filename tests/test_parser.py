@@ -134,6 +134,18 @@ class TestParseType( unittest.TestCase ):
             self.images_dir 
         )
 
+    def test_content_order_intact( self ):
+
+        t = parser.parse_type( os.path.join( self.types_dir, 'ordering.xml' ), self.fonts_dir, self.images_dir )
+        
+        self.assertEqual( len( t.content ), 4 )
+
+        c = list( t.content.items() )
+        self.assertEqual( c[0][1]['type'], 'image' )
+        self.assertEqual( c[1][1]['type'], 'text' )
+        self.assertEqual( c[2][1]['type'], 'image' )
+        self.assertEqual( c[3][1]['type'], 'text' )
+
 
 class TestParseTypes( unittest.TestCase ):
 

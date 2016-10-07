@@ -1,4 +1,5 @@
 import os, re
+from collections import OrderedDict
 from xml.etree import ElementTree as et
 from lxml import etree, objectify
 
@@ -40,7 +41,7 @@ def parse_type( type_props_file, fonts_directory, images_directory, debug=False 
    
     name_el = card_type_xml.find( 'name' )
 
-    content = {}
+    content = OrderedDict()
     for el in card_type_xml.find( 'content' ):
 
         if el.tag == 'text':

@@ -1,0 +1,9 @@
+<cardType>
+    <name>test</name>
+    <content>
+        <image id="test2" type="global" filename="test.png" />
+        <text id="test3" font-file="test.ttf" font-size="3" />
+        <image id="test4" type="global" filename="test.png" />
+        <text id="test1" font-file="test.ttf" font-size="3" />
+    </content>
+</cardType>
