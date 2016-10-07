@@ -1,6 +1,6 @@
 <cardType>
     <name>test</name>
     <content>
-        <text id="test" font-file="test.ttf" font-size="3" />
+        <image id="test" type="global" filename="test.png" />
     </content>
 </cardType>

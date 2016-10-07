@@ -1,0 +1,7 @@
+<cardType>
+    <name>test</name>
+    <content>
+        <text id="testtxt" font-file="test.ttf" font-size="3" />
+        <image id="testimg" type="wrong" filename="test" />
+    </content>
+</cardType>

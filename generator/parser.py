@@ -1,12 +1,15 @@
 import os, re
 from xml.etree import ElementTree as et
+from lxml import etree, objectify
+
+CARD_TYPES_SCHEMA = os.path.join( os.path.dirname( os.path.dirname( os.path.realpath( __file__ ) ) ), 'schemas', 'card_types.xsd' )
+CARDS_SCHEMA = os.path.join( os.path.dirname( os.path.dirname( os.path.realpath( __file__ ) ) ), 'schemas', 'cards.xsd' )
 
 class CardType( object ):
 
-    def __init__( self, name, content, template_file ):
+    def __init__( self, name, content ):
         self.name = name
         self.content = content
-        self.template_file = template_file
 
         self.font_files = {}
         for c in self.content.values():
@@ -24,61 +27,41 @@ class Card( object ):
         self.elements = elements
 
 
-def parse_type( types_directory, type_directory, fonts_directory, debug=False ):
+def parse_type( type_props_file, fonts_directory, images_directory, debug=False ):
 
-    props_file = os.path.join( types_directory, type_directory, "props.xml" )
-    template_file = os.path.join( types_directory, type_directory, "template.png" )
+    validate_schema( type_props_file, CARD_TYPES_SCHEMA )
 
     try:
-        card_type_xml = et.parse( props_file ).getroot()
+        card_type_xml = et.parse( type_props_file ).getroot()
 
     except et.ParseError as e:
-        e.msg = '{} ({})'.format( e.msg, props_file )
+        e.msg = '{} ({})'.format( e.msg, type_props_file )
         raise
-    
+   
     name_el = card_type_xml.find( 'name' )
-    if name_el is None:
-        raise et.ParseError( 'No <name> element was found in card type properties xml: {}'.format( props_file ) )
 
-    content_el = card_type_xml.find( 'content' )
-    if content_el is None:
-        raise et.ParseError( 'No <content> element was found in card type properties xml: {}'.format( props_file ) )
-    
     content = {}
-    for el in content_el:
+    for el in card_type_xml.find( 'content' ):
 
         if el.tag == 'text':
 
-            if 'id' not in el.attrib:
-                raise AttributeError( '<text> element is missing a required \'id\' attribute in card type properties xml: {}'.format( props_file ) )
+            font_file = os.path.join( fonts_directory, el.attrib.get( 'font-file' ) )
 
-            if 'font-file' not in el.attrib and 'font-family' not in el.attrib:
-                raise AttributeError( '<text> element is missing a required \'font-family\' or \'font-file\' attribute in card type properties xml: {}'.format( props_file ) )
-
-            if 'font-file' in el.attrib:
-                font_file = os.path.join( fonts_directory, el.attrib.get( 'font-file' ) )
-
-                if not os.path.isfile( font_file ):
-                    raise FileNotFoundError( font_file )
-
-            else:
-                font_file = None
+            if not os.path.isfile( font_file ):
+                raise FileNotFoundError( font_file )
 
             if 'font-size' not in el.attrib:
-                raise AttributeError( '<text> element is missing a required \'font-size\' attribute in card type properties xml: {}'.format( props_file ) )
+                raise AttributeError( '<text> element is missing a required \'font-size\' attribute in card type properties xml: {}'.format( type_props_file ) )
 
-            if not re.match( '#[a-fA-F0-9]{6}', el.attrib['color'] ):
-                raise AttributeError( '\'color\' attribute of <text> element should be in hexadecimal format (e.g. #ffffff) in type properties xml: {}'.format( props_file ) )
+            if 'color' in el.attrib and not re.match( '#[a-fA-F0-9]{6}', el.attrib['color'] ):
+                raise AttributeError( '\'color\' attribute of <text> element should be in hexadecimal format (e.g. #ffffff) in type properties xml: {}'.format( type_props_file ) )
 
             content[el.attrib.get( 'id' )] = {
                 'type': 'text',
                 'id': el.attrib.get( 'id' ),
-                'font-family': el.attrib.get( 'font-family', None ),
                 'font-file': font_file,
                 'font-size': int( el.attrib.get( 'font-size' ) ), 
-                'font-style': el.attrib.get( 'font-style', 'regular' ), 
-                'font-weight': el.attrib.get( 'font-weight', '400' ), 
-                'color': el.attrib.get( 'color', 'rgb(0,0,0)' ).strip(), 
+                'color': el.attrib.get( 'color', '#000000' ).strip(), 
                 'x': int( el.attrib.get( 'x', 0 ) ),
                 'y': int( el.attrib.get( 'y', 0 ) ),
                 'w': int( el.attrib.get( 'w', 0 ) ),
@@ -88,51 +71,77 @@ def parse_type( types_directory, type_directory, fonts_directory, debug=False ):
                 'multiline': el.attrib.get( 'multiline', 'false' ) in [ 'True', 'true', 1, '1', 't', 'y', 'yes' ],
             }
 
+        elif el.tag == 'image':
+
+            if el.attrib.get( 'type' ) == 'global':
+                image_file = os.path.join( images_directory, el.attrib.get( 'filename' ) )
+
+            else:
+                image_file = os.path.join( os.path.dirname( type_props_file ), el.attrib.get( 'filename' ) )
+
+            if not os.path.isfile( image_file ):
+                raise FileNotFoundError( image_file )
+
+            w = el.attrib.get( 'w', '100%' )
+            if not w.endswith( '%' ):
+                w = int( w )
+
+            h = el.attrib.get( 'h', '100%' )
+            if not h.endswith( '%' ):
+                h = int( h )
+                
+            content[el.attrib.get( 'id' )] = {
+                'type': 'image',
+                'id': el.attrib.get( 'id' ),
+                'filename': image_file,
+                'x': int( el.attrib.get( 'x', 0 ) ),
+                'y': int( el.attrib.get( 'y', 0 ) ),
+                'w': w,
+                'h': h,
+                'anchor': el.attrib.get( 'anchor', 'top' ),
+                'align': el.attrib.get( 'align', 'left' ),
+            }
+
+
+
     if debug:
         print( "    Parsed card type: {}".format( name_el.text.strip() ) )
     
-    return CardType( name=name_el.text.strip(), content=content, template_file=template_file )
+    return CardType( name=name_el.text.strip(), content=content )
 
 
-def parse_types( types_directory, fonts_directory, debug=False ):
+def parse_types( types_directory, fonts_directory, images_directory, debug=False ):
     
     if debug:
         print( 'Parsing card types...' )
     
-    def is_type_dir( fname ):
+    def is_type_props_file( fname ):
         
         abs_path = os.path.join( types_directory, fname )
 
-        if not os.path.isdir( abs_path ):
+        if not os.path.isfile( abs_path ):
 
             if debug:
-                print( '    Skipping {} because it is not a directory'.format( abs_path ) )
+                print( '    Skipping {} because it is not a file'.format( abs_path ) )
 
             return False
 
-        if not os.path.isfile( os.path.join( abs_path, "props.xml" ) ):
+        if not os.path.splitext( abs_path )[1] == '.xml':
 
             if debug:
-                print( '    Skipping {} because it does not contain a required "props.xml" file'.format( abs_path ) )
-
-            return False
-
-        if not os.path.isfile( os.path.join( abs_path, "template.png" ) ):
-
-            if debug:
-                print( '    Skipping {} because it does not contain a required "template.png" file'.format( abs_path ) )
+                print( '    Skipping {} because it is not an XML file'.format( abs_path ) )
 
             return False
 
         if debug:
-            print( '    Found type directory: {}'.format( fname ) )
+            print( '    Found type properties file: {}'.format( fname ) )
 
         return True
 
     card_types = { 
         card_type.name.lower(): card_type for card_type in map( 
-            lambda type_dir : parse_type( types_directory, type_dir, fonts_directory, debug=debug ),
-            filter( is_type_dir, sorted( os.listdir( path=types_directory ) ) )
+            lambda fname: parse_type( os.path.join( types_directory, fname ), fonts_directory, images_directory, debug=debug ),
+            filter( is_type_props_file, sorted( os.listdir( path=types_directory ) ) )
         )
     }
 
@@ -210,3 +219,14 @@ def parse_cards( cards_directory, language, card_types, debug=False ):
     print( "Parsed {} cards".format( len( cards ) ) )
 
     return cards
+
+
+def validate_schema( xml_file, schema_file ):
+
+    with open( xml_file, 'r' ) as f:
+
+        schema = etree.XMLSchema( file=schema_file )
+        parser = objectify.makeparser( schema=schema )
+        objectify.fromstring( f.read(), parser )
+
+    return

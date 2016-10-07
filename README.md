@@ -1,7 +1,8 @@
 # Card Game Generator
 
-A python program to generate a large range of card games. It uses templates, images and data files
-provided by the user and generates PNG images and a ready-to-print PDF
+A python program to generate card games. It uses xml templates, images and font files
+provided by the user and generates composite PNG images and a ready-to-print PDF containing
+all the generated card images.
 
 
 ### Requirements
@@ -12,66 +13,76 @@ provided by the user and generates PNG images and a ready-to-print PDF
 * Install the required Python packages  `pip install -r requirements.txt`
 * Run the main script with the required options
 ```
-usage: generate.py [-h] [-l LANG] [-w WIDTH] [--height HEIGHT] [-f FONT]
-                   [-c CARD] [-d] [-b CARDBACK] [-rw REALWIDTH]
-                   [-rh REALHEIGHT] [-si] [-sp]
+usage: generate.py [-h] [-t TYPES_FOLDER] [-f FONTS_FOLDER] [-c CARDS_FOLDER]
+                   [-b CARDBACK_FILE] [-o OUTPUT_FOLDER] [-l LANGUAGE]
+                   [-s SINGLE_CARD] [-p] [-r CARD_RESOLUTION] [-d]
 
-Generate the drinking game cards.
+Generate game cards.
 
 optional arguments:
   -h, --help            show this help message and exit
-  -l LANG, --lang LANG  The language files to use. Default: 'en'
-  -w WIDTH, --width WIDTH
-                        The width of the generated cards in px. Default: 500
-  --height HEIGHT       The height of the generated cards in px. Default: 700
-  -f FONT, --font FONT  The font to use for card generation. A corresponding
-                        font file must be present in 'assets/fonts'. Default:
-                        Planewalker
-  -c CARD, --card CARD  If this option is provided, only the card with the
-                        given name will be generated.
-  -d, --debug           If this argument is provided, text fields will be
-                        rendered with opaque squares behind them to easy
-                        template debugging.
-  -b CARDBACK, --cardback CARDBACK
-                        Full path to the image to put on the back of the
-                        cards. Default: '/home/joep/Documents/Projects/Drinker
-                        /assets/backside.png'
-  -rw REALWIDTH, --realwidth REALWIDTH
-                        The real width in mm of the printable cards. Default:
-                        63mm
-  -rh REALHEIGHT, --realheight REALHEIGHT
-                        The real height in mm of the printable cards. Default:
-                        88mm
-  -si, --skipimg        If this option is present, the card images will not be
-                        rerendered. Beware this can lead to weird errors if
-                        images are missing or incomplete.
-  -sp, --skippdf        If this option is present, no printable pdf will be
-                        generated
+  -t TYPES_FOLDER, --types-folder TYPES_FOLDER
+                        The location of the folder containing the xml property
+                        files of the available game card types. (default:
+                        ./assets/types/)
+  -f FONTS_FOLDER, --fonts-folder FONTS_FOLDER
+                        The location of the folder containing the font files
+                        used by the card types. (default: ./assets/fonts/)
+  -c CARDS_FOLDER, --cards-folder CARDS_FOLDER
+                        The location of the folder containing the xml property
+                        files of the game cards to be generated. (default:
+                        ./assets/cards/)
+  -b CARDBACK_FILE, --cardback_file CARDBACK_FILE
+                        If provided, this image will be used as a cardback for
+                        the generated cards. (default: None)
+  -o OUTPUT_FOLDER, --output-folder OUTPUT_FOLDER
+                        The location of the folder in which to store generated
+                        cards. (default: ./output/)
+  -l LANGUAGE, --language LANGUAGE
+                        The language to use when generating cards. (default:
+                        en)
+  -s SINGLE_CARD, --single-card SINGLE_CARD
+                        If provided, only the card with this folder name will
+                        be generated. Implies --skip-pdf. (default: None)
+  -p, --skip-pdf        If provided, no printable pdf containing all the cards
+                        will be generated. (default: False)
+  -r CARD_RESOLUTION, --card_resolution CARD_RESOLUTION
+                        The ppi (pixels-per-inch) resolution of the template
+                        images and thus of the generated card images.
+                        (default: 72)
+  -d, --debug           Show debug output (default: False)
 ```
 
 ### Assets structure
 
 ###### Card types
 
-There are currently 4 card types (Action, Backstab, Mandatory, Status). To add additional card types to the
-game, create a new directory under the `assets/types` directory. This directory should contain the following
-files:
-* rules.xml - Containing information about the card type, structured like `assets/types/rules.template.xml`
-* template.png - The template image for the card type
+Every generated card must belong to a certain type. Card types define where 
+the different card elements (such as text, images, icons) should appear on
+the card.
+
+For every card type, the following is required:
+* A directory containing:
+* A 'props.xml' file, conforming to the template found at 'templates/props.xml'
+* A 'template.png' image file. This image will be used as the base of all cards of this type.
+All templates used should have equal dimension, or a faulty PDF could be generated.
 
 ###### Cards
 
-To add a custom card to the game, make a new directory under the `assets/cards` directory (or any subdirectory).
-This directory should contain the following files:
-* image.[jpg,png,gif,...] - The graphic to be used for the card
-* en/props.xml - Containing information about the card. This file should be put in a directory with the name of
-the language used to describe the properties and must be structured like `assets/cards/props.template.xml`
+For each card in your game, the following is required:
+* A directory containing:
+* A 'language.xml' file, where 'language' is the language used in the file (e.g. en.xml).
+This file contains the display values for the fields defined in the card type properties file.
+
+###### Fonts
+
+Any fonts used should be provided in ttf format.
 
 ## License
 This code is licensed under the [GPL license.](https://raw.githubusercontent.com/Gargamel1989/Drinker/master/LICENSE)
 
 
 ### TODO
-* Generalize image content
-* supply assets and input directory on command line
-* optional cardback
+* Add an 'images_folder' where images can be put that can be inserted into any card. Put card template.png files here.
+* Add local_image field, where the image should be in the folder with the card language files
+* Create schema files and possibly schema validation

@@ -1,6 +1,6 @@
 <cardType>
     <name>test</name>
     <content>
-        <text for="rules" font="unknown.ttf" />
+        <text id="rules" font-file="unknown.ttf" font-size="3" />
     </content>
 </cardType>

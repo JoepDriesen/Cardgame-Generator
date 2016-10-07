@@ -1,2 +1,3 @@
+lxml==3.6.1
 Pillow==3.4.1
 reportlab==3.3.0

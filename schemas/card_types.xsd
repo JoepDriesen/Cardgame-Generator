@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="cardType">
+    <xs:complexType>
+        <xs:all> 
+        <xs:element name="name" type="xs:token" />
+
+        <xs:element name="content">
+            <xs:complexType>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+
+                    <xs:element name="text">
+                        <xs:complexType>
+    
+                            <xs:attribute name="id" type="xs:string" use="required" />
+                            <xs:attribute name="font-file" type="xs:string" use="required" />
+                            <xs:attribute name="font-size" type="xs:integer" use="required" />
+                            <xs:attribute name="color" type="xs:string" default="#000000" />
+                            <xs:attribute name="x" type="xs:integer" default="0" />
+                            <xs:attribute name="y" type="xs:integer" default="0" />
+                            <xs:attribute name="w" type="xs:integer" default="0" />
+                            <xs:attribute name="h" type="xs:integer" default="0" />
+                            <xs:attribute name="align" default="left">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="left" />
+                                        <xs:enumeration value="center" />
+                                        <xs:enumeration value="right" />
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="anchor" default="top">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="top" />
+                                        <xs:enumeration value="middle" />
+                                        <xs:enumeration value="bottom" />
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="multiline" type="xs:boolean" default="false" />
+    
+                        </xs:complexType>
+                    </xs:element>
+    
+                    <xs:element name="image">
+                        <xs:complexType>
+    
+                            <xs:attribute name="type" use="required">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="global" />
+                                        <xs:enumeration value="unique" />
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="filename" type="xs:string" use="required" />
+                            
+                            <xs:attribute name="id" type="xs:string" use="required" />
+                            <xs:attribute name="x" type="xs:integer" default="0" />
+                            <xs:attribute name="y" type="xs:integer" default="0" />
+                            <xs:attribute name="w" type="xs:string" default="100%" />
+                            <xs:attribute name="h" type="xs:string" default="100%" />
+    
+                            <xs:attribute name="align" default="left">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="left" />
+                                        <xs:enumeration value="center" />
+                                        <xs:enumeration value="right" />
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                            <xs:attribute name="anchor" default="top">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="top" />
+                                        <xs:enumeration value="middle" />
+                                        <xs:enumeration value="bottom" />
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+    
+                        </xs:complexType>
+                    </xs:element>
+
+                </xs:choice>
+    
+            </xs:complexType>
+        </xs:element>
+        
+        </xs:all>
+    </xs:complexType>
+</xs:element>
+
+</xs:schema>
