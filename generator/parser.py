@@ -153,6 +153,8 @@ def parse_types( types_directory, fonts_directory, images_directory, debug=False
 def parse_card( cards_directory, card_name, language, card_types, debug=False ):
     abs_path = os.path.join( cards_directory, card_name, '{}.xml'.format( language ) )
 
+    validate_schema( abs_path, CARDS_SCHEMA )
+
     try:
         card_xml = et.parse( abs_path ).getroot()
 
