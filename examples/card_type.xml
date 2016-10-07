@@ -1,0 +1,9 @@
+<cardType>
+	<name>Action</name>
+    <content>
+        <image id="frame" type="global" filename="action_template.png" x="0" y="0" w="100%" h="100%" />
+        <text id="name" font-file="OpenSans-Bold.ttf" font-size="120" color="#e5e5e5" x="405" y="125" />
+        <text id="rules" font-file="OpenSans-Regular.ttf" font-size="120" color="#404040" x="249" y="507" w="1300" multiline="true" />
+        <text id="flavor" font-file="OpenSans-LightItalic.ttf" font-size="120" color="#4c4c4c" x="249" y="2000" w="1300" anchor="bottom" align="center" multiline="true" /> 
+    </content>
+</cardType>
