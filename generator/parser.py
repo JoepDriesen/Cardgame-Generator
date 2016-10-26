@@ -227,9 +227,14 @@ def parse_cards( cards_directory, language, card_types, debug=False ):
 def validate_schema( xml_file, schema_file ):
 
     with open( xml_file, 'r' ) as f:
+        
+        try:
+            
+            schema = etree.XMLSchema( file=schema_file )
+            parser = objectify.makeparser( schema=schema )
+            objectify.fromstring( f.read(), parser )
 
-        schema = etree.XMLSchema( file=schema_file )
-        parser = objectify.makeparser( schema=schema )
-        objectify.fromstring( f.read(), parser )
+        except etree.XMLSyntaxError as e:
+            print( '{} ({})'.format( e, xml_file ) )
 
     return
